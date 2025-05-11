@@ -1,5 +1,5 @@
 import Link from "next/link"
-// import { LoginForm } from "./_components/login-form"
+import { LoginForm } from "./_components/login-form"
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
           <p className="mt-2 text-sm text-muted-foreground">Entre com suas credenciais para acessar sua conta</p>
         </div>
 
-        {/* <LoginForm /> */}
+        <LoginForm />
 
         <div className="text-center text-sm">
           <p>
