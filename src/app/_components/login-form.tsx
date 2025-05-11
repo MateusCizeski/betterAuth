@@ -1,16 +1,17 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { TwitchLogo } from "@phosphor-icons/react";
+import { authClient } from "@/lib/auth-client";
 
 
 const loginSchema = z.object({
@@ -34,7 +35,28 @@ export function LoginForm() {
   })
 
   async function onSubmit(formData: LoginFormValues) {
+      await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password,
+      callbackURL: '/dashboard'
+    }, {
+      onRequest: (ctx) => {
 
+      },
+
+      onSuccess: (ctx) => {
+        console.log("logado: ", ctx);
+        router.replace("/dashboard");
+      },
+
+      onError: (ctx) => {
+        console.log("Erro ao criar logar, error: ", ctx);
+
+        if(ctx.error.code === 'INVALID_EMAIL_OR_PASSWORD') {
+          alert("Email ou senha incorretos.");
+        }
+      }
+    });
 
   }
 

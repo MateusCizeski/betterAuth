@@ -1,15 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { authClient } from "@/lib/auth-client";
 
 const signupSchema = z
   .object({
@@ -42,8 +43,25 @@ export function SignupForm() {
   })
 
   async function onSubmit(formData: SignupFormValues) {
+    const { data, error } = await authClient.signUp.email({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      callbackURL: '/dashboard'
+    }, {
+      onRequest: (ctx) => {
 
+      },
 
+      onSuccess: (ctx) => {
+        console.log("Cadastrado: ", ctx);
+        router.replace("/dashboard");
+      },
+
+      onError: (ctx) => {
+        console.log("Erro ao criar conta, error: ", ctx);
+      }
+    });
   }
 
   return (
